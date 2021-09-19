@@ -153,7 +153,7 @@ class BeanDefinitionLoader {
 			load(loader);
 		}
 		if (isComponent(source)) {
-			this.annotatedReader.register(source);
+			this.annotatedReader.register(source);       //
 			return 1;
 		}
 		return 0;

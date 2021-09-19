@@ -136,9 +136,11 @@ public class DispatcherServletAutoConfiguration {
 		@Bean(name = DEFAULT_DISPATCHER_SERVLET_REGISTRATION_BEAN_NAME)
 		@ConditionalOnBean(value = DispatcherServlet.class, name = DEFAULT_DISPATCHER_SERVLET_BEAN_NAME)
 		public DispatcherServletRegistrationBean dispatcherServletRegistration(DispatcherServlet dispatcherServlet) {
+			//把DispatcherServlet和Spring环境和关联起来
 			DispatcherServletRegistrationBean registration = new DispatcherServletRegistrationBean(dispatcherServlet,
 					this.webMvcProperties.getServlet().getPath());
 			registration.setName(DEFAULT_DISPATCHER_SERVLET_BEAN_NAME);
+			//设置优先值，作用就是registration.setLoadOnStartup(1);  debug调试时设置的为-1
 			registration.setLoadOnStartup(this.webMvcProperties.getServlet().getLoadOnStartup());
 			if (this.multipartConfig != null) {
 				registration.setMultipartConfig(this.multipartConfig);

@@ -101,7 +101,7 @@ public class TomcatWebServer implements WebServer {
 					}
 				});
 
-				// Start the server to trigger initialization listeners
+				// Start the server to trigger initialization listeners 启动服务器触发初始化监听器
 				this.tomcat.start();
 
 				// We can re-throw failure exception directly in the main thread
@@ -114,8 +114,11 @@ public class TomcatWebServer implements WebServer {
 					// Naming is not enabled. Continue
 				}
 
-				// Unlike Jetty, all Tomcat threads are daemon threads. We create a
-				// blocking non-daemon to stop immediate shutdown
+				// Unlike Jetty, all Tomcat threads are daemon threads.
+				// 与 Jetty 不同，所有 Tomcat 线程都是守护线程
+				// We create a blocking non-daemon to stop immediate shutdown
+				// 我们创建了一个阻塞的非守护进程来停止立即关闭
+				// 在这里使用另一个线程开启服务等待
 				startDaemonAwaitThread();
 			}
 			catch (Exception ex) {
@@ -171,7 +174,10 @@ public class TomcatWebServer implements WebServer {
 		}
 	}
 
+	// 唯一要提醒的地方就是startDaemonAwaitThread()方法，我们知道Tomcat开启以后需要一直挂着等待服务端接入。
+	// 所以tomcat.getServer().await()的方法就写在startDaemonAwaitThread()里面，只不过调用了另一个线程执行了。
 	private void startDaemonAwaitThread() {
+		// 使用线程开启tomcat.getServer().await()等待请求接入
 		Thread awaitThread = new Thread("container-" + (containerCounter.get())) {
 
 			@Override

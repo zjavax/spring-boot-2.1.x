@@ -269,6 +269,7 @@ public class SpringApplication {
 		this.primarySources = new LinkedHashSet<>(Arrays.asList(primarySources));
 		// deduce 推断web应用类型：WebApplicationType.SERVLET
 		this.webApplicationType = WebApplicationType.deduceFromClasspath();
+		// 就是去spring.factories 中去获取所有key:org.springframework.context.ApplicationContextInitializer
 		setInitializers((Collection) getSpringFactoriesInstances(ApplicationContextInitializer.class));
 		setListeners((Collection) getSpringFactoriesInstances(ApplicationListener.class));
 		// 怎么推断main类，从运行时异常栈里找main方法
@@ -305,7 +306,7 @@ public class SpringApplication {
 		configureHeadlessProperty();
 		// EventPublishingRunListener
 		// 【1】从spring.factories配置文件中加载到EventPublishingRunListener对象并赋值给SpringApplicationRunListeners
-		// EventPublishingRunListener对象主要用来发射SpringBoot启动过程中内置的一些生命周期事件，标志每个不同启动阶段
+		// EventPublishingRunListener 对象主要用来发射SpringBoot启动过程中内置的一些生命周期事件，标志每个不同启动阶段
 		SpringApplicationRunListeners listeners = getRunListeners(args);
 		// 启动SpringApplicationRunListener的监听，表示SpringApplication开始启动。
 		// 》》》》》发射【ApplicationStartingEvent】事件
@@ -366,6 +367,7 @@ public class SpringApplication {
 		ConfigurableEnvironment environment = getOrCreateEnvironment();
 		configureEnvironment(environment, applicationArguments.getSourceArgs());
 		ConfigurationPropertySources.attach(environment);
+		// 发送事件
 		listeners.environmentPrepared(environment);
 		bindToSpringApplication(environment);
 		if (!this.isCustomEnvironment) {
